@@ -11,13 +11,13 @@ export default app => {
     app.use(compression());
     app.use(helmet());
   }
-  app.use(bodyParser.json);
+  app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
       extended: true,
     }),
   );
   if (isDev) {
-    app.use(morgan());
+    app.use(morgan('combined'));
   }
 };
