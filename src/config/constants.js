@@ -1,5 +1,6 @@
 const devConfig = {
   MONGO_URL: 'mongodb://localhost:27017/supreme-posts-dev',
+  JWT_SECRET: 'thisIsASecret',
 };
 
 const testConfig = {
@@ -12,6 +13,7 @@ const prodConfig = {
 
 const defaultConfig = {
   PORT: process.env.PORT || 3000,
+  JWT_SECRET: 'thisIsASecret',
 };
 
 function envConfig(env) {

@@ -1,5 +1,8 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 import validator from 'validator';
+import {hashSync, compareSync} from 'bcrypt-nodejs';
+import jwt from 'jsonwebtoken';
+import constants from '../../config/constants';
 
 const UserSchema = new Schema({
   email: {
@@ -37,5 +40,35 @@ const UserSchema = new Schema({
     minlength: [6, 'Password need to be longer'],
   },
 });
+
+UserSchema.pre('save', function (next) {
+  if (this.isModified('password')) {
+    this.password = this._hashPassword(this.password);
+  }
+
+  return next();
+});
+
+UserSchema.methods = {
+  _hashPassword(password) {
+    return hashSync(password);
+  },
+  authenticateUser(password) {
+    return compareSync(password, this.password);
+  },
+  createToken() {
+    return jwt.sign({
+        _id: this._id,
+      },
+      constants.JWT_SECRET)
+  },
+  toJSON() {
+    return {
+      _id: this._id,
+      userName: this.userName,
+      token: `JWT ${this.createToken()}`,
+    }
+  }
+};
 
 export default mongoose.model('User', UserSchema);
