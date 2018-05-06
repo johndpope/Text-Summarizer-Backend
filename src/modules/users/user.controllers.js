@@ -1,5 +1,5 @@
 import User from './user.model';
-import HttpStatus from 'http-status';
+import HTTPStatus from 'http-status';
 
 export async function signup(req, res) {
   try {

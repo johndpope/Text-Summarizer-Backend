@@ -13,5 +13,6 @@ const routes = new Router();
 
 routes.post('/', authJwt, validate(articleValidation.createArticle), articleController.createArticle);
 routes.get('/:id', articleController.getArticleById);
+routes.get('/', articleController.getArticlesList);
 
 export default routes;
