@@ -1,8 +1,14 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose, {
+  Schema
+} from 'mongoose';
 import validator from 'validator';
-import {hashSync, compareSync} from 'bcrypt-nodejs';
+import {
+  hashSync,
+  compareSync
+} from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
 import constants from '../../config/constants';
+import uniqueValidator from 'mongoose-unique-validator';
 
 const UserSchema = new Schema({
   email: {
@@ -39,6 +45,13 @@ const UserSchema = new Schema({
     trim: true,
     minlength: [6, 'Password need to be longer'],
   },
+}, {
+  timestamps: true
+});
+
+
+UserSchema.plugin(uniqueValidator, {
+  message: '{VALUE} already taken!',
 });
 
 UserSchema.pre('save', function (next) {
@@ -62,13 +75,19 @@ UserSchema.methods = {
       },
       constants.JWT_SECRET)
   },
-  toJSON() {
+  toAuthJSON() {
     return {
       _id: this._id,
       userName: this.userName,
       token: `JWT ${this.createToken()}`,
-    }
-  }
+    };
+  },
+  toJSON() {
+    return {
+      _id: this._id,
+      userName: this.userName,
+    };
+  },
 };
 
 export default mongoose.model('User', UserSchema);

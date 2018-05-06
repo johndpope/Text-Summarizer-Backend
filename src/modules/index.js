@@ -1,9 +1,7 @@
 import userRoutes from './users/user.routes';
-import {authJwt} from '../services/auth.services';
+import articleRoutes from './articles/article.routes';
 
 export default app => {
   app.use('/api/v1/users', userRoutes);
-  app.get('/hello', authJwt, (req, res) => {
-    res.send("This is a private route!");
-  });
+  app.use('/api/v1/articles', articleRoutes);
 };

@@ -1,15 +1,16 @@
 import User from './user.model';
+import HttpStatus from 'http-status';
 
 export async function signup(req, res) {
   try {
     const user = await User.create(req.body);
-    return res.status(201).json(user);
+    return res.status(HTTPStatus.CREATED).json(user.toAuthJSON());
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(HttpStatus.BAD_REQUEST).json(e);
   }
 }
 
 export function login(req, res, next) {
-  res.status(200).json(req.user);
+  res.status(HTTPStatus.OK).json(req.user.toAuthJSON());
   return next();
 }
