@@ -32,3 +32,36 @@ export async function getArticlesList(req, res) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
 }
+
+export async function updateArticle(req, res) {
+  try {
+    const article = await Article.findById(req.params.id);
+
+    if (!article.user.equals(req.user._id)) {
+      return res.sendStatus(HTTPStatus.UNAUTHORIZED);
+    }
+
+    Object.keys(req.body).forEach(key => {
+      article[key] = req.body[key];
+    });
+
+    return res.status(HTTPStatus.OK).json(await article.save());
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
+
+export async function deleteArticle(req, res) {
+  try {
+    const article = await Article.findById(req.params.id);
+
+    if (!article.user.equals(req.user._id)) {
+      return res.sendStatus(HTTPStatus.UNAUTHORIZED);
+    }
+
+    await article.remove();
+    return res.sendStatus(HTTPStatus.OK);
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
