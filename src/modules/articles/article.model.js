@@ -18,6 +18,10 @@ const ArticleSchema = new Schema({
     required: [true, 'Text is required'],
     minlength: [10, 'Text need to be longer']
   },
+  summary: {
+    type: String,
+    trim: true,
+  },
   slug: {
     type: String,
     trim: true,
@@ -54,6 +58,7 @@ ArticleSchema.methods = {
       _id: this._id,
       title: this.title,
       text: this.text,
+      summary: this.summary,
       createdAt: this.createdAt,
       slug: this.slug,
       user: this.user,

@@ -1,9 +1,21 @@
 import Article from './article.model';
 import HTTPStatus from 'http-status';
+import PythonShell from 'python-shell';
 
 export async function createArticle(req, res) {
   try {
-    const article = await Article.createArticle(req.body, req.user._id);
+    const articleSummary = "";
+    const articleTitle = req.body.title;
+    const articleText = req.body.text;
+    const shell = new PythonShell('../../../Engine/predicter.py', {
+      scriptPath: __dirname
+    });
+    shell.send(articleTitle);
+    shell.send(articleText);
+    shell.on('message', (summary) => {
+      console.log('just recieved a summary from python: ' + summary);
+    });
+    const article = await Article.createArticle(req.body);
     return res.status(HTTPStatus.CREATED).json(article);
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
