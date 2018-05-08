@@ -4,12 +4,12 @@ import PythonShell from 'python-shell';
 
 export async function createArticle(req, res) {
   try {
+    console.log("Passed here")
     const articleSummary = "";
     const articleTitle = req.body.title;
     const articleText = req.body.text;
-    const shell = new PythonShell('../../../Engine/predicter.py', {
-      scriptPath: __dirname
-    });
+    console.log(__dirname + "Engine/")
+    const shell = new PythonShell('/Engine/predicter.py');
     shell.send(articleTitle);
     shell.send(articleText);
     shell.on('message', (summary) => {
