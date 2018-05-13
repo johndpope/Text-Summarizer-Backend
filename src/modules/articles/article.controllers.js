@@ -1,13 +1,14 @@
 import Article from './article.model';
 import HTTPStatus from 'http-status';
 
+
 export async function createArticle(req, res) {
   try {
     const article = await Article.createArticle(req.body, req.user._id);
     Article.summarizeText(article, req.body.title, req.body.text);
     return res.status(HTTPStatus.CREATED).json(article);
   } catch (e) {
-    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+    res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
 }
 
