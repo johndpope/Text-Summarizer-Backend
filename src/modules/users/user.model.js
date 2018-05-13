@@ -7,8 +7,9 @@ import {
   compareSync
 } from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
-import constants from '../../config/constants';
 import uniqueValidator from 'mongoose-unique-validator';
+import constants from '../../config/constants';
+import Article from '../articles/article.model';
 
 const UserSchema = new Schema({
   email: {
@@ -45,6 +46,22 @@ const UserSchema = new Schema({
     trim: true,
     minlength: [6, 'Password need to be longer'],
   },
+  favourites: {
+    articles: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Article',
+      },
+    ],
+  },
+  toRead: {
+    articles: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Article',
+      },
+    ],
+  },
 }, {
   timestamps: true
 });
@@ -58,7 +75,6 @@ UserSchema.pre('save', function (next) {
   if (this.isModified('password')) {
     this.password = this._hashPassword(this.password);
   }
-
   return next();
 });
 
@@ -87,6 +103,36 @@ UserSchema.methods = {
       _id: this._id,
       userName: this.userName,
     };
+  },
+  _favourites: {
+    async articles(articleId) {
+      if (this.favourites.articles.indexOf(articleId) >= 0) {
+        this.favourites.articles.remove(articleId);
+        await Article.decFavourite(articleId);
+      } else {
+        this.favourites.articles.push(articleId);
+        await Article.incFavourite(articleId);
+      }
+      return this.save();
+    },
+    isArticleIsFavourite(articleId) {
+      if (this.favourites.articles.indexOf(articleId) >= 0) {
+        return true;
+      }
+      return false;
+    },
+  },
+  _toRead: {
+    async articles(articleId) {
+      if (this.toRead.articles.indexOf(articleId) >= 0) {
+        this.toRead.articles.remove(articleId);
+        await Article.removeToRead(articleId);
+      } else {
+        this.toRead.articles.push(articleId);
+        await Article.addToRead(articleId);
+      }
+      return this.save();
+    },
   },
 };
 

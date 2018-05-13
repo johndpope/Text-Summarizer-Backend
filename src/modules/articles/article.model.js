@@ -33,10 +33,14 @@ const ArticleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
-  favoriteCount: {
+  favouriteCount: {
     type: Number,
     default: 0,
-  }
+  },
+  toReadFlag: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true
 });
@@ -47,7 +51,6 @@ ArticleSchema.plugin(uniqueValidator, {
 
 ArticleSchema.pre('validate', function (next) {
   this._slugify();
-
   next();
 });
 
@@ -110,6 +113,18 @@ ArticleSchema.statics = {
       console.log('The exit signal was: ', signal);
       console.log('python-shell has finished excuting');
     });
+  },
+  incFavourite(articleId) {
+    return this.findByIdAndUpdate(articleId, { $inc: { favouriteCount: 1 } });
+  },
+  decFavourite(articleId) {
+    return this.findByIdAndUpdate(articleId, { $inc: { favouriteCount: -1 } });
+  },
+  addToRead(articleId) {
+    return this.findByIdAndUpdate(articleId, { toReadFlag: true });
+  },
+  removeToRead(articleId) {
+    return this.findByIdAndUpdate(articleId, { toReadFlag: false });
   },
 };
 
