@@ -3,6 +3,7 @@ import mongoose, {
 } from 'mongoose';
 import slug from 'slug'
 import uniqueValidator from 'mongoose-unique-validator';
+import PythonShell from 'python-shell';
 
 const ArticleSchema = new Schema({
   title: {
@@ -21,6 +22,7 @@ const ArticleSchema = new Schema({
   summary: {
     type: String,
     trim: true,
+    minLength: [10, 'Summary need to be longer'],
   },
   slug: {
     type: String,
@@ -31,10 +33,14 @@ const ArticleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
-  favoriteCount: {
+  favouriteCount: {
     type: Number,
     default: 0,
-  }
+  },
+  toReadFlag: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true
 });
@@ -45,7 +51,6 @@ ArticleSchema.plugin(uniqueValidator, {
 
 ArticleSchema.pre('validate', function (next) {
   this._slugify();
-
   next();
 });
 
@@ -85,6 +90,41 @@ ArticleSchema.statics = {
       .skip(skip)
       .limit(limit)
       .populate('user');
+  },
+  summarizeText(post, title, text) {
+    console.log('inside summarizeText')
+    const shellOptions = {
+      pythonPath: '/usr/bin/python3',
+      pythonOptions: ['-u'],
+      args: [title, text],
+    };
+    const shell = new PythonShell(
+      '/Summarization/Engine/predicter.py',
+      shellOptions,
+    );
+    shell.on('message', summary => {
+      console.log(summary);
+      post.summary = summary;
+      post.save();
+    });
+    shell.end((err, code, signal) => {
+      if (err) throw err;
+      console.log('The exit code was: ', code);
+      console.log('The exit signal was: ', signal);
+      console.log('python-shell has finished excuting');
+    });
+  },
+  incFavourite(articleId) {
+    return this.findByIdAndUpdate(articleId, { $inc: { favouriteCount: 1 } });
+  },
+  decFavourite(articleId) {
+    return this.findByIdAndUpdate(articleId, { $inc: { favouriteCount: -1 } });
+  },
+  addToRead(articleId) {
+    return this.findByIdAndUpdate(articleId, { toReadFlag: true });
+  },
+  removeToRead(articleId) {
+    return this.findByIdAndUpdate(articleId, { toReadFlag: false });
   },
 };
 

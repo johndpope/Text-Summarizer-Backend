@@ -21,5 +21,7 @@ routes.patch(
     articleController.updateArticle,
 );
 routes.delete('/:id', authJwt, articleController.deleteArticle);
+routes.post('/:id/favourite', authJwt, articleController.favouriteArticle);
+routes.post('/:id/toread', authJwt, articleController.toReadArticle);
 
 export default routes;
