@@ -1,4 +1,4 @@
-var multer  = require('multer')
+import multer from 'multer';
 
 const multerConfig = {
   storage: multer.diskStorage({

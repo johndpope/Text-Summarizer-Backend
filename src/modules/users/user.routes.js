@@ -7,12 +7,12 @@ var multer  = require('multer')
 
 const routes = new Router();
 
-routes.post('/signup', userController.signup);
+routes.post('/signup', mult ,userController.signup);
 routes.post('/login', authLocal, userController.login);
 
-
-routes.post('/profile', mult, function (req, res, next) {
+// test the uploading service
+//routes.post('/profile', mult, function (req, res, next) {
   //console.log(req.file)
-})
+//})
 
 export default routes;

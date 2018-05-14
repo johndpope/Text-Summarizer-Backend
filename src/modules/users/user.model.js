@@ -40,6 +40,10 @@ const UserSchema = new Schema({
     trim: true,
     unique: true,
   },
+  photo: {
+    data: Buffer,
+    contentType: String
+  },
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -103,6 +107,11 @@ UserSchema.methods = {
       _id: this._id,
       userName: this.userName,
     };
+  },
+  savePhoto(data, type){
+    this.photo.data = data;
+    this.photo.contentType = type;
+    this.save();
   },
   _favourites: {
     async articles(articleId) {
