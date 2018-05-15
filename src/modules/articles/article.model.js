@@ -11,6 +11,7 @@ const ArticleSchema = new Schema({
     trim: true,
     required: [true, 'Title is required'],
     minlength: [3, 'Title need to be longer'],
+    maxlength: [24, 'Title need to be shorter'],
     unique: true,
   },
   text: {

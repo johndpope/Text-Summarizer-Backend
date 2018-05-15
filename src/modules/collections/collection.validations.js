@@ -9,7 +9,7 @@ export default {
   },
   updateCollection: {
     body: {
-      title: Joi.string().min(5).max(24).required(),
+      title: Joi.string().min(5).max(24),
       description: Joi.string().min(10).max(48),
     }
   }

@@ -9,5 +9,6 @@ import { mult } from '../../services/upload.services';
 const routes = new Router();
 
 routes.post('/', authJwt, mult, validate(collectionValidation.createCollection), collectionController.createCollection);
+routes.patch('/:id', authJwt, mult, validate(collectionValidation.updateCollection), collectionController.updateCollection);
 
 export default routes
