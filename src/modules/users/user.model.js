@@ -66,6 +66,18 @@ const UserSchema = new Schema({
       },
     ],
   },
+  followings: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
+  followers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
 }, {
   timestamps: true
 });
@@ -143,6 +155,37 @@ UserSchema.methods = {
       return this.save();
     },
   },
+  _followings: {
+    async add(userId) {
+      if (this.followings.indexOf(userId) >= 0 ){
+        console.log('removing user from following list');
+        this.followings.remove(userId);
+      } else {
+        console.log('adding new user to following list');
+        this.followings.push(userId);
+      }
+      this.save();
+    }
+  },
+  _followers: {
+    async add(userId) {
+      if (this.followers.indexOf(userId) >= 0 ){
+        console.log('removing user from followers list');
+        this.followers.remove(userId);
+      } else {
+        console.log('adding new user to followers list');
+        this.followers.push(userId);
+      }
+      this.save();
+    }
+  }
 };
+
+UserSchema.statics = {
+  async checkFollower(currentId, followerId){
+    const user = await this.findById(currentId);
+    user._followers.add(followerId)
+  },
+}
 
 export default mongoose.model('User', UserSchema);
