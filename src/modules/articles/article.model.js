@@ -17,7 +17,7 @@ const ArticleSchema = new Schema({
     type: String,
     trim: true,
     required: [true, 'Text is required'],
-    minlength: [10, 'Text need to be longer']
+    minlength: [10, 'Text need to be longer'],
   },
   summary: {
     type: String,

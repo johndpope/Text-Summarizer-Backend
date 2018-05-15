@@ -12,8 +12,8 @@ import {
 const routes = new Router();
 
 routes.post('/', authJwt, validate(articleValidation.createArticle), articleController.createArticle);
-routes.get('/:id', articleController.getArticleById);
-routes.get('/', articleController.getArticlesList);
+routes.get('/:id', authJwt,articleController.getArticleById);
+routes.get('/', authJwt,articleController.getArticlesList);
 routes.patch(
     '/:id',
     authJwt,
