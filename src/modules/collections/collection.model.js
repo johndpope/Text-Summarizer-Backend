@@ -7,6 +7,7 @@ const CollectionSchema = new Schema({
     trim: true,
     required: [true, 'Collection title is requires'],
     minlength: [3, 'Title need to be longer'],
+    maxlength: [24, 'Title need to be shorter'],
     unique: true,
   },
   description: {
@@ -14,6 +15,7 @@ const CollectionSchema = new Schema({
     trim: true,
     required: false,
     minlength: [5, 'Description need to be longer'],
+    maxlength: [48, 'Description need to be shorter'],
   },
   photo: {
     data: Buffer,
@@ -22,7 +24,7 @@ const CollectionSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-  }
+  },
   articles: [
     {
       type: Schema.Types.ObjectId,
@@ -44,5 +46,22 @@ CollectionSchema.methods = {
       articles: this.articles,
       createdAt: this.createdAt,
     }
+  },
+  savePhoto(data, type){
+    this.photo.data = data;
+    this.photo.contentType = type;
+    console.log('saving photo to db')
+    this.save();
+  },
+}
+
+CollectionSchema.statics = {
+  createCollection(args, user){
+    return this.create({
+      ...args,
+      user,
+    });
   }
 }
+
+export default mongoose.model('Collection', CollectionSchema);

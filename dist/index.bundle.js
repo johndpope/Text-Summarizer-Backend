@@ -152,7 +152,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n\nvar _express = __webpack_require__(/*! express */ \"express\");\n\nvar _expressValidation = __webpack_require__(/*! express-validation */ \"express-validation\");\n\nvar _expressValidation2 = _interopRequireDefault(_expressValidation);\n\nvar _article = __webpack_require__(/*! ./article.validations */ \"./src/modules/articles/article.validations.js\");\n\nvar _article2 = _interopRequireDefault(_article);\n\nvar _article3 = __webpack_require__(/*! ./article.controllers */ \"./src/modules/articles/article.controllers.js\");\n\nvar articleController = _interopRequireWildcard(_article3);\n\nvar _auth = __webpack_require__(/*! ../../services/auth.services */ \"./src/services/auth.services.js\");\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nconst routes = new _express.Router();\n\nroutes.post('/', _auth.authJwt, (0, _expressValidation2.default)(_article2.default.createArticle), articleController.createArticle);\nroutes.get('/:id', _auth.authJwt, articleController.getArticleById);\nroutes.get('/', _auth.authJwt, articleController.getArticlesList);\nroutes.patch('/:id', _auth.authJwt, (0, _expressValidation2.default)(_article2.default.updateArticle), articleController.updateArticle);\nroutes.delete('/:id', _auth.authJwt, articleController.deleteArticle);\nroutes.post('/:id/favourite', _auth.authJwt, articleController.favouriteArticle);\nroutes.post('/:id/toread', _auth.authJwt, articleController.toReadArticle);\n\nexports.default = routes;\n\n//# sourceURL=webpack:///./src/modules/articles/article.routes.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _express = __webpack_require__(/*! express */ \"express\");\n\nvar _expressValidation = __webpack_require__(/*! express-validation */ \"express-validation\");\n\nvar _expressValidation2 = _interopRequireDefault(_expressValidation);\n\nvar _article = __webpack_require__(/*! ./article.validations */ \"./src/modules/articles/article.validations.js\");\n\nvar _article2 = _interopRequireDefault(_article);\n\nvar _article3 = __webpack_require__(/*! ./article.controllers */ \"./src/modules/articles/article.controllers.js\");\n\nvar articleController = _interopRequireWildcard(_article3);\n\nvar _auth = __webpack_require__(/*! ../../services/auth.services */ \"./src/services/auth.services.js\");\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nconst routes = new _express.Router();\n\nroutes.post('/', _auth.authJwt, (0, _expressValidation2.default)(_article2.default.createArticle), articleController.createArticle);\nroutes.get('/:id', _auth.authJwt, articleController.getArticleById);\nroutes.get('/', _auth.authJwt, articleController.getArticlesList);\nroutes.patch('/:id', _auth.authJwt, (0, _expressValidation2.default)(_article2.default.updateArticle), articleController.updateArticle);\nroutes.delete('/:id', _auth.authJwt, articleController.deleteArticle);\nroutes.post('/:id/favourite', _auth.authJwt, articleController.favouriteArticle);\nroutes.post('/:id/toread', _auth.authJwt, articleController.toReadArticle);\n\nexports.default = routes;\n\n//# sourceURL=webpack:///./src/modules/articles/article.routes.js?");
 
 /***/ }),
 
@@ -168,6 +168,54 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 
 /***/ }),
 
+/***/ "./src/modules/collections/collection.controllers.js":
+/*!***********************************************************!*\
+  !*** ./src/modules/collections/collection.controllers.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.createCollection = createCollection;\n\nvar _httpStatus = __webpack_require__(/*! http-status */ \"http-status\");\n\nvar _httpStatus2 = _interopRequireDefault(_httpStatus);\n\nvar _collection = __webpack_require__(/*! ./collection.model */ \"./src/modules/collections/collection.model.js\");\n\nvar _collection2 = _interopRequireDefault(_collection);\n\nvar _user = __webpack_require__(/*! ../users/user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nasync function createCollection(req, res) {\n  try {\n    const collection = await _collection2.default.createCollection(req.body, req.user._id);\n    if (req.file) collection.savePhoto(req.file.path, req.file.mimetype);\n    return res.status(_httpStatus2.default.CREATED).json(collection);\n  } catch (e) {\n    res.status(_httpStatus2.default.BAD_REQUEST).json(e);\n  }\n}\n\n//# sourceURL=webpack:///./src/modules/collections/collection.controllers.js?");
+
+/***/ }),
+
+/***/ "./src/modules/collections/collection.model.js":
+/*!*****************************************************!*\
+  !*** ./src/modules/collections/collection.model.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\n\nvar _mongoose2 = _interopRequireDefault(_mongoose);\n\nvar _slug = __webpack_require__(/*! slug */ \"slug\");\n\nvar _slug2 = _interopRequireDefault(_slug);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nconst CollectionSchema = new _mongoose.Schema({\n  title: {\n    type: String,\n    trim: true,\n    required: [true, 'Collection title is requires'],\n    minlength: [3, 'Title need to be longer'],\n    maxlength: [24, 'Title need to be shorter'],\n    unique: true\n  },\n  description: {\n    type: String,\n    trim: true,\n    required: false,\n    minlength: [5, 'Description need to be longer'],\n    maxlength: [48, 'Description need to be shorter']\n  },\n  photo: {\n    data: Buffer,\n    contentType: String\n  },\n  user: {\n    type: _mongoose.Schema.Types.ObjectId,\n    ref: 'User'\n  },\n  articles: [{\n    type: _mongoose.Schema.Types.ObjectId,\n    ref: 'Article'\n  }]\n}, {\n  timestamps: true\n});\n\nCollectionSchema.methods = {\n  toJSON() {\n    return {\n      _id: this._id,\n      title: this.title,\n      description: this.description,\n      photo: this.photo,\n      user: this.user,\n      articles: this.articles,\n      createdAt: this.createdAt\n    };\n  },\n  savePhoto(data, type) {\n    this.photo.data = data;\n    this.photo.contentType = type;\n    console.log('saving photo to db');\n    this.save();\n  }\n};\n\nCollectionSchema.statics = {\n  createCollection(args, user) {\n    return this.create(Object.assign({}, args, {\n      user\n    }));\n  }\n};\n\nexports.default = _mongoose2.default.model('Collection', CollectionSchema);\n\n//# sourceURL=webpack:///./src/modules/collections/collection.model.js?");
+
+/***/ }),
+
+/***/ "./src/modules/collections/collection.routes.js":
+/*!******************************************************!*\
+  !*** ./src/modules/collections/collection.routes.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _express = __webpack_require__(/*! express */ \"express\");\n\nvar _expressValidation = __webpack_require__(/*! express-validation */ \"express-validation\");\n\nvar _expressValidation2 = _interopRequireDefault(_expressValidation);\n\nvar _collection = __webpack_require__(/*! ./collection.validations */ \"./src/modules/collections/collection.validations.js\");\n\nvar _collection2 = _interopRequireDefault(_collection);\n\nvar _collection3 = __webpack_require__(/*! ./collection.controllers */ \"./src/modules/collections/collection.controllers.js\");\n\nvar collectionController = _interopRequireWildcard(_collection3);\n\nvar _auth = __webpack_require__(/*! ../../services/auth.services */ \"./src/services/auth.services.js\");\n\nvar _upload = __webpack_require__(/*! ../../services/upload.services */ \"./src/services/upload.services.js\");\n\nfunction _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nconst routes = new _express.Router();\n\nroutes.post('/', _auth.authJwt, _upload.mult, (0, _expressValidation2.default)(_collection2.default.createCollection), collectionController.createCollection);\n\nexports.default = routes;\n\n//# sourceURL=webpack:///./src/modules/collections/collection.routes.js?");
+
+/***/ }),
+
+/***/ "./src/modules/collections/collection.validations.js":
+/*!***********************************************************!*\
+  !*** ./src/modules/collections/collection.validations.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _joi = __webpack_require__(/*! joi */ \"joi\");\n\nvar _joi2 = _interopRequireDefault(_joi);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nexports.default = {\n  createCollection: {\n    body: {\n      title: _joi2.default.string().min(3).max(24).required(),\n      description: _joi2.default.string().min(10).max(48)\n    }\n  },\n  updateCollection: {\n    body: {\n      title: _joi2.default.string().min(5).max(24).required(),\n      description: _joi2.default.string().min(10).max(48)\n    }\n  }\n};\n\n//# sourceURL=webpack:///./src/modules/collections/collection.validations.js?");
+
+/***/ }),
+
 /***/ "./src/modules/index.js":
 /*!******************************!*\
   !*** ./src/modules/index.js ***!
@@ -176,7 +224,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _user = __webpack_require__(/*! ./users/user.routes */ \"./src/modules/users/user.routes.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nvar _article = __webpack_require__(/*! ./articles/article.routes */ \"./src/modules/articles/article.routes.js\");\n\nvar _article2 = _interopRequireDefault(_article);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nexports.default = app => {\n  app.use('/api/v1/users', _user2.default);\n  app.use('/api/v1/articles', _article2.default);\n};\n\n//# sourceURL=webpack:///./src/modules/index.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _user = __webpack_require__(/*! ./users/user.routes */ \"./src/modules/users/user.routes.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nvar _article = __webpack_require__(/*! ./articles/article.routes */ \"./src/modules/articles/article.routes.js\");\n\nvar _article2 = _interopRequireDefault(_article);\n\nvar _collection = __webpack_require__(/*! ./collections/collection.routes */ \"./src/modules/collections/collection.routes.js\");\n\nvar _collection2 = _interopRequireDefault(_collection);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nexports.default = app => {\n  app.use('/api/v1/users', _user2.default);\n  app.use('/api/v1/articles', _article2.default);\n  app.use('/api/v1/collections', _collection2.default);\n};\n\n//# sourceURL=webpack:///./src/modules/index.js?");
 
 /***/ }),
 
@@ -188,7 +236,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.signup = signup;\nexports.login = login;\nexports.follow = follow;\n\nvar _httpStatus = __webpack_require__(/*! http-status */ \"http-status\");\n\nvar _httpStatus2 = _interopRequireDefault(_httpStatus);\n\nvar _fs = __webpack_require__(/*! fs */ \"fs\");\n\nvar _fs2 = _interopRequireDefault(_fs);\n\nvar _user = __webpack_require__(/*! ./user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nasync function signup(req, res) {\n  try {\n    const user = await _user2.default.create(req.body);\n    user.savePhoto(req.file.path, req.file.mimetype);\n    return res.status(_httpStatus2.default.CREATED).json(user.toAuthJSON());\n  } catch (e) {\n    return res.status(_httpStatus2.default.BAD_REQUEST).json(e);\n  }\n}\n\nfunction login(req, res, next) {\n  res.status(_httpStatus2.default.OK).json(req.user.toAuthJSON());\n  return next();\n}\n\nasync function follow(req, res) {\n  try {\n    const user = await _user2.default.findById(req.user._id);\n    await user._followings.add(req.params.id);\n    await _user2.default.checkFollower(req.params.id, req.user.id);\n    return res.sendStatus(_httpStatus2.default.OK);\n  } catch (e) {\n    return res.status(_httpStatus2.default.BAD_REQUEST).json(e);\n  }\n}\n\n//# sourceURL=webpack:///./src/modules/users/user.controllers.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.signup = signup;\nexports.login = login;\nexports.follow = follow;\n\nvar _httpStatus = __webpack_require__(/*! http-status */ \"http-status\");\n\nvar _httpStatus2 = _interopRequireDefault(_httpStatus);\n\nvar _fs = __webpack_require__(/*! fs */ \"fs\");\n\nvar _fs2 = _interopRequireDefault(_fs);\n\nvar _user = __webpack_require__(/*! ./user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nasync function signup(req, res) {\n  try {\n    const user = await _user2.default.create(req.body);\n    if (req.file) user.savePhoto(req.file.path, req.file.mimetype);\n    return res.status(_httpStatus2.default.CREATED).json(user.toAuthJSON());\n  } catch (e) {\n    return res.status(_httpStatus2.default.BAD_REQUEST).json(e);\n  }\n}\n\nfunction login(req, res, next) {\n  res.status(_httpStatus2.default.OK).json(req.user.toAuthJSON());\n  return next();\n}\n\nasync function follow(req, res) {\n  try {\n    const user = await _user2.default.findById(req.user._id);\n    await user._followings.add(req.params.id);\n    await _user2.default.checkFollower(req.params.id, req.user.id);\n    return res.sendStatus(_httpStatus2.default.OK);\n  } catch (e) {\n    return res.status(_httpStatus2.default.BAD_REQUEST).json(e);\n  }\n}\n\n//# sourceURL=webpack:///./src/modules/users/user.controllers.js?");
 
 /***/ }),
 
