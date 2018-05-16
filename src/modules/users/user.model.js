@@ -1,11 +1,6 @@
-import mongoose, {
-  Schema
-} from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import validator from 'validator';
-import {
-  hashSync,
-  compareSync
-} from 'bcrypt-nodejs';
+import { hashSync, compareSync } from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
 import uniqueValidator from 'mongoose-unique-validator';
 import constants from '../../config/constants';
@@ -66,6 +61,18 @@ const UserSchema = new Schema({
       },
     ],
   },
+  followings: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
+  followers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
 }, {
   timestamps: true
 });
@@ -106,6 +113,9 @@ UserSchema.methods = {
     return {
       _id: this._id,
       userName: this.userName,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      photo: this.photo
     };
   },
   savePhoto(data, type){
@@ -143,6 +153,37 @@ UserSchema.methods = {
       return this.save();
     },
   },
+  _followings: {
+    async add(userId) {
+      if (this.followings.indexOf(userId) >= 0 ){
+        console.log('removing user from following list');
+        this.followings.remove(userId);
+      } else {
+        console.log('adding new user to following list');
+        this.followings.push(userId);
+      }
+      this.save();
+    }
+  },
+  _followers: {
+    async add(userId) {
+      if (this.followers.indexOf(userId) >= 0 ){
+        console.log('removing user from followers list');
+        this.followers.remove(userId);
+      } else {
+        console.log('adding new user to followers list');
+        this.followers.push(userId);
+      }
+      this.save();
+    }
+  }
 };
+
+UserSchema.statics = {
+  async checkFollower(currentId, followerId){
+    const user = await this.findById(currentId);
+    user._followers.add(followerId)
+  },
+}
 
 export default mongoose.model('User', UserSchema);
