@@ -8,7 +8,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "dev:build": "yarn run clean && webpack -w",
-    "dev": "cross-env NODE_ENV=development nodemon --trace-warnings dist/index.bundle.js"
+    "dev": "cross-env NODE_ENV=development nodemon --trace-warnings dist/index.bundle.js",
+    "production": "cross-env NODE_ENV=production nodemon --trace-warnings dist/index.bundle.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
