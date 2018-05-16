@@ -6,7 +6,9 @@ import Article from './article.model';
 export async function createArticle(req, res) {
   try {
     const article = await Article.createArticle(req.body, req.user._id);
-    Article.summarizeText(article, req.body.title, req.body.text);
+    await Article.summarizeText(article, req.body.title, req.body.text);
+    if (req.file)
+      await article.savePhoto(req.file.path, req.file.mimetype);
     return res.status(HTTPStatus.CREATED).json(article);
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -47,7 +49,6 @@ export async function getArticlesList(req, res) {
       });
       return arr;
     }, []);
-
     return res.status(HTTPStatus.OK).json(articles);
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -57,15 +58,14 @@ export async function getArticlesList(req, res) {
 export async function updateArticle(req, res) {
   try {
     const article = await Article.findById(req.params.id);
-
     if (!article.user.equals(req.user._id)) {
       return res.sendStatus(HTTPStatus.UNAUTHORIZED);
     }
-
     Object.keys(req.body).forEach(key => {
       article[key] = req.body[key];
     });
-
+    if (req.file)
+      article.savePhoto(req.file.path, req.file.mimetype);
     return res.status(HTTPStatus.OK).json(await article.save());
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -75,18 +75,15 @@ export async function updateArticle(req, res) {
 export async function deleteArticle(req, res) {
   try {
     const article = await Article.findById(req.params.id);
-
     if (!article.user.equals(req.user._id)) {
       return res.sendStatus(HTTPStatus.UNAUTHORIZED);
     }
-
     await article.remove();
     return res.sendStatus(HTTPStatus.OK);
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
 }
-
 
 export async function favouriteArticle(req, res) {
   try {

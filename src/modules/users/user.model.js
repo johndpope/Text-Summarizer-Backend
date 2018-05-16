@@ -113,6 +113,8 @@ UserSchema.methods = {
     return {
       _id: this._id,
       userName: this.userName,
+      firstName: this.firstName,
+      lastName: this.lastName
     };
   },
   savePhoto(data, type){

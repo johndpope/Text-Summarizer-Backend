@@ -2,6 +2,7 @@ import HTTPStatus from 'http-status';
 import fs from 'fs';
 import User from './user.model';
 
+
 export async function signup(req, res) {
   try {
     const user = await User.create(req.body);

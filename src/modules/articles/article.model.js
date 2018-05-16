@@ -1,6 +1,4 @@
-import mongoose, {
-  Schema
-} from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import slug from 'slug'
 import uniqueValidator from 'mongoose-unique-validator';
 import PythonShell from 'python-shell';
@@ -24,6 +22,10 @@ const ArticleSchema = new Schema({
     type: String,
     trim: true,
     minLength: [10, 'Summary need to be longer'],
+  },
+  photo: {
+    data: Buffer,
+    contentType: String,
   },
   slug: {
     type: String,
@@ -66,10 +68,14 @@ ArticleSchema.methods = {
       text: this.text,
       summary: this.summary,
       createdAt: this.createdAt,
-      slug: this.slug,
       user: this.user,
       favoriteCount: this.favoriteCount,
     };
+  },
+  savePhoto(data, type){
+    this.photo.data = data;
+    this.photo.contentType = type;
+    this.save();
   },
 };
 

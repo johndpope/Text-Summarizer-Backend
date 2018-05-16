@@ -11,6 +11,8 @@ const routes = new Router();
 routes.post('/', authJwt, mult, validate(collectionValidation.createCollection), collectionController.createCollection);
 routes.patch('/:id', authJwt, mult, validate(collectionValidation.updateCollection), collectionController.updateCollection);
 routes.get('/:id', authJwt, collectionController.getCollectionById);
-routes.post('/:cid/:aid', authJwt, collectionController.addArticleToCollection);
+routes.post('/:cid/:aid', authJwt, collectionController.addArticleToCollection); // performs the add and delete (if the requested article already exists it got deleted)
+routes.delete('/:id', authJwt, collectionController.deleteCollection);
+routes.get('/user/:uid', authJwt, collectionController.getUserCollections);
 
 export default routes
