@@ -29,3 +29,22 @@ export async function updateCollection(req, res) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
 }
+
+export async function getCollectionById(req, res) {
+  try {
+    const collection = await Collection.findById(req.params.id);
+    return res.status(HTTPStatus.OK).json(collection.articles);
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
+
+export async function addArticleToCollection(req, res) {
+  try {
+    const collection = await Collection.findById(req.params.cid);
+    await collection._articles.add(req.params.aid);
+    return res.sendStatus(HTTPStatus.OK);
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}

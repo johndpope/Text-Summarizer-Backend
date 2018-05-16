@@ -10,5 +10,7 @@ const routes = new Router();
 
 routes.post('/', authJwt, mult, validate(collectionValidation.createCollection), collectionController.createCollection);
 routes.patch('/:id', authJwt, mult, validate(collectionValidation.updateCollection), collectionController.updateCollection);
+routes.get('/:id', authJwt, collectionController.getCollectionById);
+routes.post('/:cid/:aid', authJwt, collectionController.addArticleToCollection);
 
 export default routes

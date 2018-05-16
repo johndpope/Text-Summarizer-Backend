@@ -53,6 +53,18 @@ CollectionSchema.methods = {
     console.log('saving photo to db')
     this.save();
   },
+  _articles: {
+    add(articleId){
+      if (this.articles.indexOf(articleId) >= 0){
+        console.log('removing article from collection');
+        this.articles.remove(articleId);
+      } else {
+        console.log('adding article to collection');
+        this.article.push(articleId);
+      }
+      this.save();
+    }
+  }
 }
 
 CollectionSchema.statics = {
