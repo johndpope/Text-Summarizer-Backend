@@ -114,7 +114,8 @@ UserSchema.methods = {
       _id: this._id,
       userName: this.userName,
       firstName: this.firstName,
-      lastName: this.lastName
+      lastName: this.lastName,
+      photo: this.photo
     };
   },
   savePhoto(data, type){

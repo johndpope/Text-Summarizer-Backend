@@ -19,12 +19,26 @@ export function login(req, res, next) {
   return next();
 }
 
-export async function follow(req, res){
+export async function follow(req, res) {
   try {
     const user = await User.findById(req.user._id);
     await user._followings.add(req.params.id);
     await User.checkFollower(req.params.id, req.user.id)
     return res.sendStatus(HTTPStatus.OK);
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
+
+export async function update(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
+    Object.keys(req.body).forEach(key => {
+      user[key] = req.body[key];
+    });
+    if (req.file)
+      await user.savePhoto(req.file.path, req.file.mimetype);
+    return res.status(HTTPStatus.OK).json(await user.save());
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }

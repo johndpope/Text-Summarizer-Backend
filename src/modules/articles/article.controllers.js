@@ -65,7 +65,7 @@ export async function updateArticle(req, res) {
       article[key] = req.body[key];
     });
     if (req.file)
-      article.savePhoto(req.file.path, req.file.mimetype);
+      await article.savePhoto(req.file.path, req.file.mimetype);
     return res.status(HTTPStatus.OK).json(await article.save());
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
