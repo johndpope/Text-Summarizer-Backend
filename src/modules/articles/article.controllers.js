@@ -1,4 +1,5 @@
 import HTTPStatus from 'http-status';
+import { minioClient } from '../../services/minio.services'
 import User from '../users/user.model';
 import Article from './article.model';
 
@@ -8,7 +9,7 @@ export async function createArticle(req, res) {
     const article = await Article.createArticle(req.body, req.user._id);
     await Article.summarizeText(article, req.body.title, req.body.text);
     if (req.file)
-      await article.savePhoto(req.file.path, req.file.mimetype);
+      await article.savePhoto(req.file);
     return res.status(HTTPStatus.CREATED).json(article);
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -23,10 +24,27 @@ export async function getArticleById(req, res) {
     ]);
     const favourite = promise[0]._favourites.isArticleIsFavourite(req.params.id);
     const article = promise[1];
-    return res.status(HTTPStatus.OK).json({
-      ...article.toJSON(),
-      favourite,
+
+    var size = 0
+    var data = ""
+    minioClient.getObject('europetrip', article.photo, (err, dataStream) => {
+      if (err) {
+        return console.log(err)
+      }
+      dataStream.on('data', (chunk) => {
+        size += chunk.length
+        data += chunk
+      })
+      dataStream.on('end', () => {
+        console.log('End. Total size = ' + size)
+        article.photo = data
+        return res.status(HTTPStatus.OK).json({
+          ...article.toJSON(),
+          favourite,
+        });
+      })
     });
+
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
@@ -41,14 +59,34 @@ export async function getArticlesList(req, res) {
         skip: parseInt(req.query.skip, 0),
       }),
     ]);
+
     const articles = promise[1].reduce((arr, article) => {
-      const favourite = promise[0]._favourites.isArticleIsFavourite(article._id);
+    const favourite = promise[0]._favourites.isArticleIsFavourite(article._id);
+/*
+      var size = 0
+      var data = ""
+      minioClient.getObject('europetrip', article.photo, (err, dataStream) => {
+        if (err) {
+          return console.log(err)
+        }
+        dataStream.on('data', (chunk) => {
+          size += chunk.length
+          data += chunk
+        })
+        dataStream.on('end', () => {
+          console.log('End. Total size = ' + size)
+          article.photo = data
+        })
+      });
+*/
       arr.push({
         ...article.toJSON(),
         favourite,
       });
+
       return arr;
     }, []);
+
     return res.status(HTTPStatus.OK).json(articles);
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -65,7 +103,8 @@ export async function updateArticle(req, res) {
       article[key] = req.body[key];
     });
     if (req.file)
-      await article.savePhoto(req.file.path, req.file.mimetype);
+      //TODO make sure that the original file name is unique
+      await article.savePhoto(req.file);
     return res.status(HTTPStatus.OK).json(await article.save());
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);

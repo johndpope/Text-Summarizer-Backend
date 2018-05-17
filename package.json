@@ -23,6 +23,7 @@
     "http-status": "^1.1.0",
     "joi": "^13.2.0",
     "jsonwebtoken": "^8.2.1",
+    "minio": "^5.0.2",
     "mongoose": "^5.0.14",
     "mongoose-unique-validator": "^2.0.1",
     "mongoose-validator": "^2.0.2",

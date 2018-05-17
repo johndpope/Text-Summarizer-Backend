@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import slug from 'slug';
+import { minioClient } from '../../services/minio.services';
 
 const CollectionSchema = new Schema({
   title: {
@@ -18,8 +19,8 @@ const CollectionSchema = new Schema({
     maxlength: [48, 'Description need to be shorter'],
   },
   photo: {
-    data: Buffer,
-    contentType: String
+    type: String,
+    trim: true,
   },
   user: {
     type: Schema.Types.ObjectId,
@@ -47,11 +48,15 @@ CollectionSchema.methods = {
       createdAt: this.createdAt,
     }
   },
-  savePhoto(data, type){
-    this.photo.data = data;
-    this.photo.contentType = type;
-    console.log('saving photo to db')
-    this.save();
+  savePhoto(photo){
+    minioClient.putObject('europetrip', photo.originalname, photo.buffer, "application/octet-stream", function(error, etag) {
+       if(error) {
+           return console.log(error);
+       }
+       console.log('File uploaded successfully.')
+   });
+   this.photo = photo.originalname
+   this.save()
   },
   _articles: {
     add(articleId){
@@ -60,7 +65,7 @@ CollectionSchema.methods = {
         this.articles.remove(articleId);
       } else {
         console.log('adding article to collection');
-        this.article.push(articleId);
+        this.articles.push(articleId);
       }
       this.save();
     }
