@@ -1,1 +1,1 @@
-web: cross-env NODE_ENV=development nodemon --trace-warnings dist/index.bundle.js
+web: NODE_ENV=production node --trace-warnings dist/index.bundle.js
