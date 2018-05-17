@@ -23,7 +23,7 @@ export async function follow(req, res) {
   try {
     const user = await User.findById(req.user._id);
     await user._followings.add(req.params.id);
-    await User.checkFollower(req.params.id, req.user.id)
+    await User.checkFollower(req.params.id, req.user.id);
     return res.sendStatus(HTTPStatus.OK);
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
