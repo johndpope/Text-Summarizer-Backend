@@ -3,6 +3,7 @@ import validator from 'validator';
 import { hashSync, compareSync } from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
 import uniqueValidator from 'mongoose-unique-validator';
+import { minioClient } from '../../services/minio.services';
 import constants from '../../config/constants';
 import Article from '../articles/article.model';
 
@@ -36,8 +37,8 @@ const UserSchema = new Schema({
     unique: true,
   },
   photo: {
-    data: Buffer,
-    contentType: String
+    type: String,
+    trim: true,
   },
   password: {
     type: String,
@@ -106,6 +107,7 @@ UserSchema.methods = {
     return {
       _id: this._id,
       userName: this.userName,
+      photo: this.photo,
       token: `JWT ${this.createToken()}`,
     };
   },
@@ -118,10 +120,15 @@ UserSchema.methods = {
       photo: this.photo
     };
   },
-  savePhoto(data, type){
-    this.photo.data = data;
-    this.photo.contentType = type;
-    this.save();
+  savePhoto(photo){
+     minioClient.putObject('europetrip', photo.originalname, photo.buffer, "application/octet-stream", function(error, etag) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log('File uploaded successfully.')
+    });
+    this.photo = photo.originalname
+    this.save()
   },
   _favourites: {
     async articles(articleId) {
@@ -183,7 +190,7 @@ UserSchema.statics = {
   async checkFollower(currentId, followerId){
     const user = await this.findById(currentId);
     user._followers.add(followerId)
-  },
+  }
 }
 
 export default mongoose.model('User', UserSchema);
