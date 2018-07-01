@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import slug from 'slug'
 import uniqueValidator from 'mongoose-unique-validator';
 import PythonShell from 'python-shell';
+import { minioClient } from '../../services/minio.services';
+
 
 const ArticleSchema = new Schema({
   title: {
@@ -24,8 +26,8 @@ const ArticleSchema = new Schema({
     minLength: [10, 'Summary need to be longer'],
   },
   photo: {
-    data: Buffer,
-    contentType: String,
+    type: String,
+    trim: true,
   },
   slug: {
     type: String,
@@ -70,12 +72,18 @@ ArticleSchema.methods = {
       createdAt: this.createdAt,
       user: this.user,
       favoriteCount: this.favoriteCount,
+      photo: this.photo,
     };
   },
-  savePhoto(data, type){
-    this.photo.data = data;
-    this.photo.contentType = type;
-    this.save();
+  savePhoto(photo){
+     minioClient.putObject('europetrip', photo.originalname, photo.buffer, "application/octet-stream", function(error, etag) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log('File uploaded successfully.')
+    });
+    this.photo = photo.originalname
+    this.save()
   },
 };
 

@@ -6,6 +6,7 @@ import passport from 'passport';
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
+const isTest = process.env.NODE_ENV === 'test';
 
 export default app => {
   if (isProd) {
@@ -19,7 +20,7 @@ export default app => {
     }),
   );
   app.use(passport.initialize());
-  if (isDev) {
+  if (isDev || isTest) {
     app.use(morgan('combined'));
   }
 };

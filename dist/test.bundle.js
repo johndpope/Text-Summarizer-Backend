@@ -82,7 +82,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./test/app_test.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -315,6 +315,77 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 
 /***/ }),
 
+/***/ "./test/app_test.js":
+/*!**************************!*\
+  !*** ./test/app_test.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar _user = __webpack_require__(/*! ../src/modules/users/user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nlet sinon = __webpack_require__(/*! sinon */ \"sinon\");\nlet chai = __webpack_require__(/*! chai */ \"chai\");\nlet mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\nlet assert = __webpack_require__(/*! assert */ \"assert\");\nlet expect = chai.expect;\nlet faker = __webpack_require__(/*! faker */ \"faker\");\nvar request = __webpack_require__(/*! supertest */ \"supertest\")('http://localhost:3000/api/v1/users');\nlet app = __webpack_require__(/*! ../src/index */ \"./src/index.js\");\nlet models = __webpack_require__(/*! ./user_model_test.js */ \"./test/user_model_test.js\");\nlet routes = __webpack_require__(/*! ./user_routes_test.js */ \"./test/user_routes_test.js\");\nlet mocks = __webpack_require__(/*! ./user_mock.js */ \"./test/user_mock.js\");\nlet article = __webpack_require__(/*! ./article_model_test.js */ \"./test/article_model_test.js\");\n\nbefore('Connecting to DB', function (done) {\n  mongoose.connect('mongodb://localhost:27017/supreme-posts-test');\n  mongoose.connection.once('open', () => {\n    console.log('connected to mongoDB');\n    mongoose.connection.collections.users.drop();\n    done();\n  }).on('error', err => {\n    throw err;\n  });\n});\n\nroutes.testRoutes();\nmodels.testModels();\nmocks.mockDB();\narticle.testArticleModel();\n\n//# sourceURL=webpack:///./test/app_test.js?");
+
+/***/ }),
+
+/***/ "./test/article_model_test.js":
+/*!************************************!*\
+  !*** ./test/article_model_test.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.testArticleModel = testArticleModel;\n\nvar _article = __webpack_require__(/*! ../src/modules/articles/article.model */ \"./src/modules/articles/article.model.js\");\n\nvar _article2 = _interopRequireDefault(_article);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nlet sinon = __webpack_require__(/*! sinon */ \"sinon\");\nlet chai = __webpack_require__(/*! chai */ \"chai\");\nlet mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\nlet assert = __webpack_require__(/*! assert */ \"assert\");\nlet expect = chai.expect;\nlet faker = __webpack_require__(/*! faker */ \"faker\");\nvar request = __webpack_require__(/*! supertest */ \"supertest\")('http://localhost:3000/api/v1/users');\nlet app = __webpack_require__(/*! ../src/index */ \"./src/index.js\");\n\nfunction testArticleModel() {\n  describe('Testing Article Model', function () {\n\n    var ObjectID = __webpack_require__(/*! mongodb */ \"mongodb\").ObjectID;\n    var objectId = new ObjectID();\n    var article;\n\n    faker.seed(801);\n    const fakeArticle = {\n      title: faker.lorem.words(),\n      slug: faker.lorem.slug(),\n      text: faker.lorem.paragraphs(),\n      summary: faker.lorem.paragraph(),\n      user: objectId\n    };\n\n    before('should create a new article', done => {\n      article = new _article2.default(fakeArticle);\n      console.log(article);\n      article.save().then(() => {\n        assert(!article.isNew);\n        done();\n      });\n    });\n\n    it('Modifies the title of the created article', function (done) {\n      faker.seed(200);\n      _article2.default.findOneAndUpdate({ _id: article._id }, { title: faker.lorem.words() }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record._id).to.not.be.undefined;\n        expect(record.text).to.not.be.undefined;\n        expect(record.title).to.not.be.undefined;\n        expect(record.slug).to.not.be.undefined;\n        expect(record.summary).to.not.be.undefined;\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Modifies the text of the created article', function (done) {\n      faker.seed(300);\n      _article2.default.findOneAndUpdate({ _id: article._id }, { text: faker.lorem.paragraphs() }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.not.be.undefined;\n        expect(record._id).to.not.be.undefined;\n        expect(record.text).to.not.be.undefined;\n        expect(record.title).to.not.be.undefined;\n        expect(record.slug).to.not.be.undefined;\n        expect(record.summary).to.not.be.undefined;\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Finds the created article', function (done) {\n      _article2.default.findOne({ _id: article._id }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.not.be.undefined;\n        expect(record._id).to.not.be.undefined;\n        expect(record.text).to.not.be.undefined;\n        expect(record.title).to.not.be.undefined;\n        expect(record.slug).to.not.be.undefined;\n        expect(record.summary).to.not.be.undefined;\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Deletes the created article', function (done) {\n      _article2.default.findOneAndRemove({ _id: article._id }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.be.an('object');\n        expect(err).to.be.null;\n        done();\n      });\n    });\n  });\n}\n\n//# sourceURL=webpack:///./test/article_model_test.js?");
+
+/***/ }),
+
+/***/ "./test/user_mock.js":
+/*!***************************!*\
+  !*** ./test/user_mock.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.mockDB = mockDB;\n\nvar _user = __webpack_require__(/*! ../src/modules/users/user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nlet sinon = __webpack_require__(/*! sinon */ \"sinon\");\nlet chai = __webpack_require__(/*! chai */ \"chai\");\nlet mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\nlet assert = __webpack_require__(/*! assert */ \"assert\");\nlet expect = chai.expect;\nlet faker = __webpack_require__(/*! faker */ \"faker\");\nvar request = __webpack_require__(/*! supertest */ \"supertest\")('http://localhost:3000/api/v1/users');\nlet app = __webpack_require__(/*! ../src/index */ \"./src/index.js\");\n\nfunction mockDB() {\n  describe('User Mocks', function () {\n\n    faker.seed(99);\n    const fakeUser = {\n      firstName: faker.name.firstName(),\n      lastName: faker.name.lastName(),\n      email: faker.internet.email(),\n      password: faker.internet.password(),\n      userName: faker.internet.userName()\n    };\n\n    it('Should create a new user', function (done) {\n      const user = new _user2.default(fakeUser);\n      const userMock = sinon.mock(user);\n      const theUser = userMock.object;\n\n      userMock.expects('save').yields(null);\n\n      theUser.save(err => {\n        userMock.verify();\n        userMock.restore();\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Should return error if user isn\\'t created', function (done) {\n      const user = new _user2.default(fakeUser);\n      const userMock = sinon.mock(user);\n      const theUser = userMock.object;\n      const expectedError = {\n        name: 'ValidationError'\n      };\n\n      userMock.expects('save').yields(expectedError);\n\n      theUser.save((err, result) => {\n        userMock.verify();\n        userMock.restore();\n        expect(err.name).to.equal('ValidationError');\n        expect(result).to.be.undefined;\n        done();\n      });\n    });\n\n    it('Should find user by email', function (done) {\n      const userMock = sinon.mock(_user2.default);\n      const expectedUser = fakeUser;\n\n      userMock.expects('findOne').withArgs({ email: fakeUser.email }).yields(null, expectedUser);\n\n      _user2.default.findOne({ email: fakeUser.email }, (err, result) => {\n        userMock.verify();\n        userMock.restore();\n        expect(result.email).to.equal(fakeUser.email);\n        done();\n      });\n    });\n\n    it('Should remove a user', function (done) {\n      const userMock = sinon.mock(_user2.default);\n      const expectedResult = {\n        nRemoved: 1\n      };\n\n      userMock.expects('remove').withArgs({ email: fakeUser.email }).yields(null, expectedResult);\n\n      _user2.default.remove({ email: fakeUser.email }, (err, result) => {\n        userMock.verify();\n        userMock.restore();\n        expect(err).to.be.null;\n        expect(result.nRemoved).to.equal(1);\n        done();\n      });\n    });\n  });\n}\n\n//# sourceURL=webpack:///./test/user_mock.js?");
+
+/***/ }),
+
+/***/ "./test/user_model_test.js":
+/*!*********************************!*\
+  !*** ./test/user_model_test.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.testModels = testModels;\n\nvar _user = __webpack_require__(/*! ../src/modules/users/user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nlet sinon = __webpack_require__(/*! sinon */ \"sinon\");\nlet chai = __webpack_require__(/*! chai */ \"chai\");\nlet mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\nlet assert = __webpack_require__(/*! assert */ \"assert\");\nlet expect = chai.expect;\nlet faker = __webpack_require__(/*! faker */ \"faker\");\nvar request = __webpack_require__(/*! supertest */ \"supertest\")('http://localhost:3000/api/v1/users');\nlet app = __webpack_require__(/*! ../src/index */ \"./src/index.js\");\n\nfunction testModels() {\n  describe('Testing User Model', function () {\n    let user;\n    faker.seed(1000);\n    const fakeUser = {\n      firstName: faker.name.firstName(),\n      lastName: faker.name.lastName(),\n      email: faker.internet.email(),\n      password: faker.internet.password(),\n      userName: faker.internet.userName()\n    };\n    const missedUserName = {\n      firstName: faker.name.firstName(),\n      lastName: faker.name.lastName(),\n      email: faker.internet.email(),\n      password: faker.internet.password()\n    };\n\n    before('Creates a new user to test it', function (done) {\n      user = new _user2.default(fakeUser);\n      user.save().then(() => {\n        assert(!user.isNew);\n        done();\n      });\n    });\n\n    it('Modifies the created user', function (done) {\n      _user2.default.findOneAndUpdate({ _id: user._id }, { lastName: 'Ref' }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.be.an('object');\n        expect(record._id).to.not.be.undefined;\n        expect(record.userName).to.not.be.undefined;\n        expect(record.lastName).to.not.be.undefined;\n        expect(record.email).to.not.be.undefined;\n        expect(record.password).to.not.be.undefined;\n        expect(record.userName).to.not.be.undefined;\n        expect(record.email).to.match(/^.+@.+\\..+$/);\n        expect(record.password).to.be.a('string');\n        expect(record.firstName).to.be.a('string');\n        expect(record.lastName).to.be.a('string');\n        expect(record.userName).to.be.a('string');\n        expect(record.email).to.be.a('string');\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Finds the created user', function (done) {\n      _user2.default.findOne({ _id: user._id }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.be.an('object');\n        expect(record._id).to.not.be.undefined;\n        expect(record.userName).to.not.be.undefined;\n        expect(record.lastName).to.not.be.undefined;\n        expect(record.email).to.not.be.undefined;\n        expect(record.password).to.not.be.undefined;\n        expect(record.userName).to.not.be.undefined;\n        expect(record.email).to.match(/^.+@.+\\..+$/);\n        expect(record.password).to.be.a('string');\n        expect(record.firstName).to.be.a('string');\n        expect(record.lastName).to.be.a('string');\n        expect(record.userName).to.be.a('string');\n        expect(record.email).to.be.a('string');\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Deletes the created user', function (done) {\n      _user2.default.findOneAndRemove({ _id: user._id }, (err, record) => {\n        expect(record).to.not.be.undefined;\n        expect(record).to.be.an('object');\n        expect(err).to.be.null;\n        done();\n      });\n    });\n\n    it('Missing userName', function (done) {\n      user = new _user2.default(missedUserName);\n      user.save().then(() => {\n        assert(user.isNew);\n      });\n      done();\n    });\n\n    it('Invalid email', function (done) {\n      user = new _user2.default({\n        firstName: fakeUser.firstName,\n        lastName: fakeUser.lastName,\n        email: 'poldi1234@.com',\n        password: fakeUser.password,\n        userName: fakeUser.userName\n      });\n      user.save().then(() => {\n        assert(user.isNew);\n      });\n      done();\n    });\n\n    it('Weak password', function (done) {\n      user = new _user2.default({\n        firstName: fakeUser.firstName,\n        lastName: fakeUser.lastName,\n        email: fakeUser.email,\n        password: 'aaaaa123',\n        userName: fakeUser.userName\n      });\n      user.save().then(() => {\n        assert(user.isNew);\n      });\n      done();\n    });\n\n    it('Short password', function (done) {\n      user = new _user2.default({\n        firstName: fakeUser.firstName,\n        lastName: fakeUser.lastName,\n        email: fakeUser.email,\n        password: 'aa23',\n        userName: fakeUser.userName\n      });\n      user.save().then(() => {\n        assert(user.isNew);\n      });\n      done();\n    });\n  });\n}\n\n//# sourceURL=webpack:///./test/user_model_test.js?");
+
+/***/ }),
+
+/***/ "./test/user_routes_test.js":
+/*!**********************************!*\
+  !*** ./test/user_routes_test.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.testRoutes = testRoutes;\n\nvar _user = __webpack_require__(/*! ../src/modules/users/user.model */ \"./src/modules/users/user.model.js\");\n\nvar _user2 = _interopRequireDefault(_user);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nlet sinon = __webpack_require__(/*! sinon */ \"sinon\");\nlet chai = __webpack_require__(/*! chai */ \"chai\");\nlet mongoose = __webpack_require__(/*! mongoose */ \"mongoose\");\nlet assert = __webpack_require__(/*! assert */ \"assert\");\nlet expect = chai.expect;\nlet faker = __webpack_require__(/*! faker */ \"faker\");\nlet request = __webpack_require__(/*! supertest */ \"supertest\")('http://localhost:3000/api/v1/users');\nlet app = __webpack_require__(/*! ../src/index */ \"./src/index.js\");\n\nfunction testRoutes() {\n  describe('Testing User routes', function () {\n    let user1;\n    let user2;\n    let token1;\n    let id2;\n    let cookies;\n\n    faker.seed(99);\n    const fakeUser = {\n      irstName: faker.name.firstName(),\n      lastName: faker.name.lastName(),\n      email: faker.internet.email(),\n      password: faker.internet.password(),\n      userName: faker.internet.userName()\n    };\n    faker.seed(100);\n    const fakeUser2 = {\n      irstName: faker.name.firstName(),\n      lastName: faker.name.lastName(),\n      email: faker.internet.email(),\n      password: faker.internet.password(),\n      userName: faker.internet.userName()\n    };\n\n    it('should create new user', done => {\n      request.post('/signup').send(fakeUser).end(function (err, res) {\n        token1 = res.body.token;\n        expect(res.body._id).to.not.be.undefined;\n        expect(res.body.userName).to.not.be.undefined;\n        expect(res.body.token).to.not.be.undefined;\n        expect(res.body._id).to.be.a('string');\n        expect(res.body.userName).to.be.a('string');\n        expect(res.body.token).to.be.a('string');\n        expect(res.statusCode).to.be.eq(201);\n        expect(err).to.be.null;\n        expect(201);\n        done();\n      });\n    });\n\n    it('should login', done => {\n      request.post('/login').send({ email: fakeUser.email, password: fakeUser.password }).query(token1).expect(200).end((err, res) => {\n        expect(res.body._id).to.not.be.undefined;\n        expect(res.body.userName).to.not.be.undefined;\n        expect(res.body.token).to.not.be.undefined;\n        expect(res.body._id).to.be.a('string');\n        expect(res.body.userName).to.be.a('string');\n        expect(res.body.token).to.be.a('string');\n        expect(res.statusCode).to.be.eq(200);\n        expect(err).to.be.null;\n        expect(200);\n        done();\n      });\n    });\n\n    it('should create new user2', done => {\n      request.post('/signup').send(fakeUser2).end(function (err, res) {\n        id2 = res.body._id;\n        expect(201);\n        expect(res.body._id).to.not.be.undefined;\n        expect(res.body.userName).to.not.be.undefined;\n        expect(res.body.token).to.not.be.undefined;\n        expect(res.body._id).to.be.a('string');\n        expect(res.body.userName).to.be.a('string');\n        expect(res.body.token).to.be.a('string');\n        expect(res.statusCode).to.be.eq(201);\n        expect(err).to.be.null;\n        expect(201);\n        done();\n      });\n    });\n\n    it('user1 should follow user2', done => {\n      request.post(`/${id2}/follow`).set({ authorization: token1 }).expect(200).end((err, res) => {\n        expect(err).to.be.null;\n        expect(res.body).to.be.an('object');\n        done();\n      });\n    });\n\n    it('should update user photo', done => {\n      request.patch('/update').set({ authorization: token1 }).attach('photo', '/home/dania/Octave/cartoon.jpeg').expect(200).end((err, res) => {\n        expect(err).to.be.null;\n        expect(res.body).to.be.an('object');\n        done();\n      });\n    });\n\n    it('should change user\\'s last name', done => {\n      request.patch('/update').set({ authorization: token1 }).send({ lastName: 'XXX' }).expect(200).end((err, res) => {\n        expect(err).to.be.null;\n        expect(res.body).to.be.an('object');\n        done();\n      });\n    });\n\n    it('should change user\\'s password', done => {\n      request.patch('/update').set({ authorization: token1 }).send({ password: 'newpass' }).expect(200).end((err, res) => {\n        expect(err).to.be.null;\n        expect(res.body).to.be.an('object');\n        done();\n      });\n    });\n\n    it('try login with old password', done => {\n      request.post('/login').send({ email: fakeUser.email, password: fakeUser.password }).query(token1).expect(401).end((err, res) => {\n        expect(err).to.be.null;\n        expect(res.body).to.be.an('object');\n        done();\n      });\n    });\n\n    it('should login with the new password', done => {\n      request.post('/login').send({ email: fakeUser.email, password: 'newpass' }).query(token1).expect(200).end((err, res) => {\n        expect(res.body._id).to.not.be.undefined;\n        expect(res.body.userName).to.not.be.undefined;\n        expect(res.body.token).to.not.be.undefined;\n        expect(res.body._id).to.be.a('string');\n        expect(res.body.userName).to.be.a('string');\n        expect(res.body.token).to.be.a('string');\n        expect(res.statusCode).to.be.eq(200);\n        expect(err).to.be.null;\n        expect(200);\n        done();\n      });\n    });\n  });\n}\n\n//# sourceURL=webpack:///./test/user_routes_test.js?");
+
+/***/ }),
+
+/***/ "assert":
+/*!*************************!*\
+  !*** external "assert" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"assert\");\n\n//# sourceURL=webpack:///external_%22assert%22?");
+
+/***/ }),
+
 /***/ "bcrypt-nodejs":
 /*!********************************!*\
   !*** external "bcrypt-nodejs" ***!
@@ -334,6 +405,17 @@ eval("module.exports = require(\"bcrypt-nodejs\");\n\n//# sourceURL=webpack:///e
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"body-parser\");\n\n//# sourceURL=webpack:///external_%22body-parser%22?");
+
+/***/ }),
+
+/***/ "chai":
+/*!***********************!*\
+  !*** external "chai" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"chai\");\n\n//# sourceURL=webpack:///external_%22chai%22?");
 
 /***/ }),
 
@@ -378,6 +460,17 @@ eval("module.exports = require(\"express-session\");\n\n//# sourceURL=webpack://
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"express-validation\");\n\n//# sourceURL=webpack:///external_%22express-validation%22?");
+
+/***/ }),
+
+/***/ "faker":
+/*!************************!*\
+  !*** external "faker" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"faker\");\n\n//# sourceURL=webpack:///external_%22faker%22?");
 
 /***/ }),
 
@@ -444,6 +537,17 @@ eval("module.exports = require(\"jsonwebtoken\");\n\n//# sourceURL=webpack:///ex
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"minio\");\n\n//# sourceURL=webpack:///external_%22minio%22?");
+
+/***/ }),
+
+/***/ "mongodb":
+/*!**************************!*\
+  !*** external "mongodb" ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"mongodb\");\n\n//# sourceURL=webpack:///external_%22mongodb%22?");
 
 /***/ }),
 
@@ -568,6 +672,17 @@ eval("module.exports = require(\"python-shell\");\n\n//# sourceURL=webpack:///ex
 
 /***/ }),
 
+/***/ "sinon":
+/*!************************!*\
+  !*** external "sinon" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"sinon\");\n\n//# sourceURL=webpack:///external_%22sinon%22?");
+
+/***/ }),
+
 /***/ "slug":
 /*!***********************!*\
   !*** external "slug" ***!
@@ -576,6 +691,17 @@ eval("module.exports = require(\"python-shell\");\n\n//# sourceURL=webpack:///ex
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"slug\");\n\n//# sourceURL=webpack:///external_%22slug%22?");
+
+/***/ }),
+
+/***/ "supertest":
+/*!****************************!*\
+  !*** external "supertest" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"supertest\");\n\n//# sourceURL=webpack:///external_%22supertest%22?");
 
 /***/ }),
 

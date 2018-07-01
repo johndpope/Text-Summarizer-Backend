@@ -18,7 +18,6 @@ const localStrategy = new LocalStrategy(localOpts, async (email, password, done)
     } else if (!user.authenticateUser(password)) {
       return done(null, false);
     }
-
     return done(null, user);
   } catch (e) {
     return done(e, false);

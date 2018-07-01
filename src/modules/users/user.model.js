@@ -3,6 +3,7 @@ import validator from 'validator';
 import { hashSync, compareSync } from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
 import uniqueValidator from 'mongoose-unique-validator';
+import { minioClient } from '../../services/minio.services';
 import constants from '../../config/constants';
 import Article from '../articles/article.model';
 
@@ -10,7 +11,6 @@ const UserSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: true,
     trim: true,
     validate: {
       validator(email) {
@@ -21,12 +21,10 @@ const UserSchema = new Schema({
   },
   firstName: {
     type: String,
-    required: [true, 'First name is required'],
     trim: true,
   },
   lastName: {
     type: String,
-    required: [true, 'Last name is required'],
     trim: true,
   },
   userName: {
@@ -36,14 +34,18 @@ const UserSchema = new Schema({
     unique: true,
   },
   photo: {
-    data: Buffer,
-    contentType: String
+    type: String,
+    trim: true,
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
     trim: true,
     minlength: [6, 'Password need to be longer'],
+  },
+  twitter: {
+    id: String,
+    fullName: String,
+    screenName: String,
   },
   favourites: {
     articles: [
@@ -106,6 +108,8 @@ UserSchema.methods = {
     return {
       _id: this._id,
       userName: this.userName,
+      photo: this.photo,
+      twitter: this.twitter,
       token: `JWT ${this.createToken()}`,
     };
   },
@@ -115,12 +119,21 @@ UserSchema.methods = {
       userName: this.userName,
       firstName: this.firstName,
       lastName: this.lastName,
+      favourites: this.favourites,
+      toRead: this.toRead,
+      followings: this.followings,
+      followers: this.followers,
       photo: this.photo
     };
   },
-  savePhoto(data, type){
-    this.photo.data = data;
-    this.photo.contentType = type;
+  savePhoto(photo){
+     minioClient.putObject('mybucket', photo.originalname, photo.buffer, "application/octet-stream", function(error, etag) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log('File uploaded successfully.');
+    });
+    this.photo = photo.originalname;
     this.save();
   },
   _favourites: {
@@ -183,7 +196,7 @@ UserSchema.statics = {
   async checkFollower(currentId, followerId){
     const user = await this.findById(currentId);
     user._followers.add(followerId)
-  },
+  }
 }
 
 export default mongoose.model('User', UserSchema);
