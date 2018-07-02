@@ -8,7 +8,7 @@ const app = express();
 app.use(session({ secret: 'this is my secret session' }));
 middelwareConfig(app);
 
-app.get('/book', (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send('Hello World!');
 });
 

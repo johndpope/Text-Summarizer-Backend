@@ -9,7 +9,9 @@ let app = require('../src/index');
 let models = require('./user_model_test.js');
 let routes = require('./user_routes_test.js');
 let mocks = require('./user_mock.js');
-let article = require('./article_model_test.js')
+let articleModel = require('./article_model_test.js');
+let articleRoutes = require('./article_routes_test.js');
+
 
 import User from '../src/modules/users/user.model';
 
@@ -30,4 +32,5 @@ before('Connecting to DB', function(done) {
 routes.testRoutes();
 models.testModels();
 mocks.mockDB();
-article.testArticleModel();
+articleModel.testArticleModel();
+articleRoutes.testArticleRoutes();

@@ -5,6 +5,7 @@ import Article from './article.model';
 
 
 export async function createArticle(req, res) {
+  console.log('inside the controller')
   try {
     const article = await Article.createArticle(req.body, req.user._id);
     await Article.summarizeText(article, req.body.title, req.body.text);
@@ -24,27 +25,31 @@ export async function getArticleById(req, res) {
     ]);
     const favourite = promise[0]._favourites.isArticleIsFavourite(req.params.id);
     const article = promise[1];
-
-    var size = 0
-    var data = ""
-    minioClient.getObject('europetrip', article.photo, (err, dataStream) => {
-      if (err) {
-        return console.log(err)
-      }
-      dataStream.on('data', (chunk) => {
-        size += chunk.length
-        data += chunk
-      })
-      dataStream.on('end', () => {
-        console.log('End. Total size = ' + size)
-        article.photo = data
-        return res.status(HTTPStatus.OK).json({
-          ...article.toJSON(),
-          favourite,
-        });
-      })
-    });
-
+    if(req.file){
+      var size = 0
+      var data = ""
+      minioClient.getObject('mybucket', article.photo, (err, dataStream) => {
+        if (err) {
+          return console.log(err)
+        }
+        dataStream.on('data', (chunk) => {
+          size += chunk.length
+          data += chunk
+        })
+        dataStream.on('end', () => {
+          console.log('End. Total size = ' + size)
+          article.photo = data
+          return res.status(HTTPStatus.OK).json({
+            ...article.toJSON(),
+            favourite,
+          });
+        })
+      });
+    }
+    return res.status(HTTPStatus.OK).json({
+      ...article.toJSON(),
+      favourite,
+    })
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
@@ -102,9 +107,11 @@ export async function updateArticle(req, res) {
     Object.keys(req.body).forEach(key => {
       article[key] = req.body[key];
     });
-    if (req.file)
+    if (req.file){
       //TODO make sure that the original file name is unique
       await article.savePhoto(req.file);
+      return res.status(HTTPStatus.OK).json(article);
+    }
     return res.status(HTTPStatus.OK).json(await article.save());
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);

@@ -8,7 +8,7 @@ const testConfig = {
 };
 
 const prodConfig = {
-  MONGO_URL: 'mongodb://localhost:27017/supreme-posts-prod',
+  MONGO_URL: 'mongodb://admin:admin@ds251518.mlab.com:51518/likerss',
 };
 
 const defaultConfig = {
