@@ -40,7 +40,7 @@ export async function getCollectionById(req, res, next) {
     if (collection.photo){
       var size = 0
       var data = ""
-      minioClient.getObject('europetrip', collection.photo, (err, dataStream) => {
+      minioClient.getObject('mybucket', collection.photo, (err, dataStream) => {
         if (err) {
           return console.log(err)
         }
