@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   target: 'node',
-  mode: 'development',
+  mode: 'production',
   externals: [nodeExternals()],
   entry: {
     index: './src/index.js',
@@ -15,12 +15,10 @@ module.exports = {
     libraryTarget: 'commonjs2',
   },
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: 'babel-loader',
-      },
-    ],
+    rules: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: 'babel-loader',
+    }, ],
   },
 };
