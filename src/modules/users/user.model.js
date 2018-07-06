@@ -111,6 +111,11 @@ UserSchema.methods = {
       photo: this.photo,
       twitter: this.twitter,
       token: `JWT ${this.createToken()}`,
+      favourites: this.favourites,
+      toRead: this.toRead,
+      followings: this.followings,
+      followers: this.followers,
+      photo: this.photo
     };
   },
   toJSON() {
