@@ -1,6 +1,7 @@
 import HTTPStatus from 'http-status';
 import fs from 'fs';
 import User from './user.model';
+import Article from '../articles/article.model';
 import { minioClient } from '../../services/minio.services';
 
 
@@ -51,29 +52,36 @@ export async function twitterSignup(req, res) {
 
 export function login(req, res, next) {
   try {
-    const user = req.user.toAuthJSON();
-    if (user.photo){
-      var size = 0
-      var data = ""
-      minioClient.getObject('mybucket', user.photo, (err, dataStream) => {
-        if (err) {
-          return console.log(err)
-        }
-        dataStream.on('data', (chunk) => {
-          size += chunk.length
-          data += chunk
-        })
-        dataStream.on('end', () => {
-          console.log('End. Total size = ' + size)
-          user.photo = data
-          res.status(HTTPStatus.OK).json(user);
+    const user = req.user;
+    Article.find({ '_id': { $in: user.favourites.articles }}, (err, objs)=> {
+      user.favourites.articles = objs;
+      Article.find({ '_id': { $in: user.toRead.articles}}, (err, toreads) => {
+        user.toRead.articles = toreads;
+        if (user.photo){
+          var size = 0
+          var data = ""
+          minioClient.getObject('mybucket', user.photo, (err, dataStream) => {
+            if (err) {
+              return console.log(err)
+            }
+            dataStream.on('data', (chunk) => {
+              size += chunk.length
+              data += chunk
+            })
+            dataStream.on('end', () => {
+              console.log('End. Total size = ' + size)
+              user.photo = data
+              res.status(HTTPStatus.OK).json(user);
+              return next();
+            })
+          });
+        } else {
+          res.status(HTTPStatus.OK).json(user.toAuthJSON());
           return next();
-        })
-      });
-    } else {
-      res.status(HTTPStatus.OK).json(user);
-      return next();
-    }
+        }
+      })
+    });
+
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }

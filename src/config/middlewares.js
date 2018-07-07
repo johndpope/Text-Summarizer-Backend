@@ -20,7 +20,7 @@ export default app => {
     }),
   );
   app.use(passport.initialize());
-  if (isDev || isTest) {
+  if (isDev || isTest || isProd) {
     app.use(morgan('combined'));
   }
 };
