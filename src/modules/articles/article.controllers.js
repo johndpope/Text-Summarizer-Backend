@@ -1,7 +1,5 @@
 import HTTPStatus from 'http-status';
-import {
-  minioClient
-} from '../../services/minio.services'
+import { minioClient } from '../../services/minio.services'
 import User from '../users/user.model';
 import Article from './article.model';
 
@@ -27,7 +25,7 @@ export async function getArticleById(req, res) {
     ]);
     const favourite = promise[0]._favourites.isArticleIsFavourite(req.params.id);
     const article = promise[1];
-    if (req.file) {
+    if(req.file){
       var size = 0
       var data = ""
       minioClient.getObject('mybucket', article.photo, (err, dataStream) => {
@@ -68,24 +66,24 @@ export async function getArticlesList(req, res) {
     ]);
 
     const articles = promise[1].reduce((arr, article) => {
-      const favourite = promise[0]._favourites.isArticleIsFavourite(article._id);
-      /*
-            var size = 0
-            var data = ""
-            minioClient.getObject('europetrip', article.photo, (err, dataStream) => {
-              if (err) {
-                return console.log(err)
-              }
-              dataStream.on('data', (chunk) => {
-                size += chunk.length
-                data += chunk
-              })
-              dataStream.on('end', () => {
-                console.log('End. Total size = ' + size)
-                article.photo = data
-              })
-            });
-      */
+    const favourite = promise[0]._favourites.isArticleIsFavourite(article._id);
+/*
+      var size = 0
+      var data = ""
+      minioClient.getObject('europetrip', article.photo, (err, dataStream) => {
+        if (err) {
+          return console.log(err)
+        }
+        dataStream.on('data', (chunk) => {
+          size += chunk.length
+          data += chunk
+        })
+        dataStream.on('end', () => {
+          console.log('End. Total size = ' + size)
+          article.photo = data
+        })
+      });
+*/
       arr.push({
         ...article.toJSON(),
         favourite,
@@ -94,9 +92,7 @@ export async function getArticlesList(req, res) {
       return arr;
     }, []);
 
-    return res.status(HTTPStatus.OK).json({
-      data: articles
-    });
+    return res.status(HTTPStatus.OK).json(articles);
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
@@ -111,7 +107,7 @@ export async function updateArticle(req, res) {
     Object.keys(req.body).forEach(key => {
       article[key] = req.body[key];
     });
-    if (req.file) {
+    if (req.file){
       //TODO make sure that the original file name is unique
       await article.savePhoto(req.file);
       return res.status(HTTPStatus.OK).json(article);

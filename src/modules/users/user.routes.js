@@ -20,5 +20,7 @@ routes.post('/:id/follow', authJwt ,userController.follow);
 routes.patch('/update', authJwt, Multer({storage: Multer.memoryStorage()}).single("photo"), userController.update);
 routes.get('/login/twitter', authTwitter);
 routes.get('/auth/twitter/callback', authTwitterCallback, userController.twitterSignup);
+routes.get('/:id/favourites', authJwt, userController.getFavouritesList);
+routes.get('/:id/toread', authJwt, userController.getToreadsList);
 
 export default routes;

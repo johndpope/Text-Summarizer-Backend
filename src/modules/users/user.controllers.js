@@ -53,10 +53,6 @@ export async function twitterSignup(req, res) {
 export function login(req, res, next) {
   try {
     const user = req.user;
-    Article.find({ '_id': { $in: user.favourites.articles }}, (err, objs)=> {
-      user.favourites.articles = objs;
-      Article.find({ '_id': { $in: user.toRead.articles}}, (err, toreads) => {
-        user.toRead.articles = toreads;
         if (user.photo){
           var size = 0
           var data = ""
@@ -79,9 +75,6 @@ export function login(req, res, next) {
           res.status(HTTPStatus.OK).json(user.toAuthJSON());
           return next();
         }
-      })
-    });
-
   } catch (e) {
     return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
@@ -126,6 +119,31 @@ export async function findUserById(req, res) {
     }
     return res.status(HTTPStatus.OK).json(user.toJSON());
   } catch (e) {
-    return res.status(HTTPStatus.BAD_REQUEST).josn(e);
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
+
+export async function getFavouritesList(req, res) {
+  try {
+    User.findById(req.params.id, (err, user) => {
+      Article.find({ '_id': { $in: user.favourites.articles }}, (err, favs) => {
+        return res.status(HTTPStatus.OK).json(favs);
+      })
+    });
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
+}
+
+
+export function getToreadsList(req, res, next) {
+  try {
+    User.findById(req.params.id, (err, user) => {
+      Article.find({ '_id': { $in: user.toRead.articles }}, (err, toreads) => {
+        return res.status(HTTPStatus.OK).json(toreads);
+      })
+    });
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
 }
