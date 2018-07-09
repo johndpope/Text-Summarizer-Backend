@@ -92,7 +92,7 @@ export async function getArticlesList(req, res) {
       return arr;
     }, []);
 
-    return res.status(HTTPStatus.OK).json(articles);
+    return res.status(HTTPStatus.OK).json({data: articles});
   } catch (e) {
     res.status(HTTPStatus.BAD_REQUEST).json(e);
   }
