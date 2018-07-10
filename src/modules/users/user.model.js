@@ -205,8 +205,8 @@ UserSchema.statics = {
     async isFollowed(currentId, followerId) {
         const user = await this.findById(currentId);
         let isUserFollowed = false;
-        isUserFollowed = await user.followings.indexOf(followerId) >= 0;
-        return isUserFollowed
+        isUserFollowed = await user.followers.indexOf(followerId) >= 0;
+        return !isUserFollowed
     }
 }
 
