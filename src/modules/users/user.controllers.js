@@ -128,7 +128,7 @@ export async function getFavouritesList(req, res) {
     try {
         User.findById(req.params.id, (err, user) => {
             Article.find({'_id': {$in: user.favourites.articles}}, (err, favs) => {
-                return res.status(HTTPStatus.OK).json(favs);
+                return res.status(HTTPStatus.OK).json({data: favs});
             })
         });
     } catch (e) {
