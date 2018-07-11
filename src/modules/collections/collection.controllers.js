@@ -90,7 +90,7 @@ export async function deleteCollection(req, res) {
 
 export async function getUserCollections(req, res) {
   try {
-      const collections = await Collection.find({user: req.params.uid}).populate('articles');
+      const collections = await Collection.find({user: req.params.uid}).populate('articles').populate('user');
 
     return res.status(HTTPStatus.OK).json({data : collections});
   } catch (e) {
