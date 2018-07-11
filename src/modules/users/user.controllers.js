@@ -129,7 +129,7 @@ export async function getFavouritesList(req, res) {
         User.findById(req.params.id, (err, user) => {
             Article.find({'_id': {$in: user.favourites.articles}}, (err, favs) => {
                 return res.status(HTTPStatus.OK).json({data: favs});
-            })
+            }).populate('user');
         });
     } catch (e) {
         return res.status(HTTPStatus.BAD_REQUEST).json(e);
