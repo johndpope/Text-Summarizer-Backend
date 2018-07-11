@@ -14,6 +14,8 @@ import { minioClient } from '../../services/minio.services';
 const routes = new Router();
 
 routes.get('/:id', userController.findUserById);
+routes.get('/:id/followers', userController.getFollowers);
+routes.get('/:id/following', userController.getFollowing);
 routes.post('/signup', userController.signup);
 routes.post('/login', authLocal, userController.login);
 routes.post('/:id/follow', authJwt ,userController.follow);

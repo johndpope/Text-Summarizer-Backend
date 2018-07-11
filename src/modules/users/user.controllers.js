@@ -124,6 +124,34 @@ export async function findUserById(req, res) {
     }
 }
 
+export async function getFollowers(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+        }
+        User.find({'_id': {$in: user.followers}}, (err, followers) => {
+            return res.status(HTTPStatus.OK).json({data: followers});
+        });
+    } catch (e) {
+        return res.status(HTTPStatus.BAD_REQUEST).json(e);
+    }
+}
+
+export async function getFollowing(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+        }
+        User.find({'_id': {$in: user.followings}}, (err, followings) => {
+            return res.status(HTTPStatus.OK).json({data: followings});
+        });
+    } catch (e) {
+        return res.status(HTTPStatus.BAD_REQUEST).json(e);
+    }
+}
+
 export async function getFavouritesList(req, res) {
     try {
         User.findById(req.params.id, (err, user) => {
