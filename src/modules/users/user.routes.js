@@ -16,6 +16,7 @@ const routes = new Router();
 routes.get('/:id', userController.findUserById);
 routes.get('/:id/followers', userController.getFollowers);
 routes.get('/:id/following', userController.getFollowing);
+routes.get('/:id/articles', userController.getUserArticles);
 routes.post('/signup', userController.signup);
 routes.post('/login', authLocal, userController.login);
 routes.post('/:id/follow', authJwt ,userController.follow);

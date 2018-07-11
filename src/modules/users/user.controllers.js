@@ -152,6 +152,20 @@ export async function getFollowing(req, res) {
     }
 }
 
+export async function getUserArticles(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+        }
+        Article.find({'user': {$in: user.id}}, (err, userArticles) => {
+            return res.status(HTTPStatus.OK).json({data: userArticles});
+        }).populate('user');
+    } catch (e) {
+        return res.status(HTTPStatus.BAD_REQUEST).json(e);
+    }
+}
+
 export async function getFavouritesList(req, res) {
     try {
         User.findById(req.params.id, (err, user) => {
