@@ -2,7 +2,9 @@ import HTTPStatus from 'http-status';
 import fs from 'fs';
 import User from './user.model';
 import Article from '../articles/article.model';
-import { minioClient } from '../../services/minio.services';
+import {
+  minioClient
+} from '../../services/minio.services';
 
 export async function signup(req, res) {
   try {
@@ -13,9 +15,9 @@ export async function signup(req, res) {
   }
 }
 
+// update
 function upsertUser(profile, res) {
-  return User.findOne(
-    {
+  return User.findOne({
       'twitter.id': profile.id,
     },
     (err, user) => {
@@ -139,8 +141,7 @@ export async function getFollowers(req, res) {
         message: 'User not found!',
       });
     }
-    User.find(
-      {
+    User.find({
         _id: {
           $in: user.followers,
         },
@@ -164,8 +165,7 @@ export async function getFollowing(req, res) {
         message: 'User not found!',
       });
     }
-    User.find(
-      {
+    User.find({
         _id: {
           $in: user.followings,
         },
@@ -189,8 +189,7 @@ export async function getUserArticles(req, res) {
         message: 'User not found!',
       });
     }
-    Article.find(
-      {
+    Article.find({
         user: {
           $in: user.id,
         },
@@ -209,8 +208,7 @@ export async function getUserArticles(req, res) {
 export async function getFavouritesList(req, res) {
   try {
     User.findById(req.params.id, (err, user) => {
-      Article.find(
-        {
+      Article.find({
           _id: {
             $in: user.favourites.articles,
           },
@@ -230,8 +228,7 @@ export async function getFavouritesList(req, res) {
 export function getToreadsList(req, res, next) {
   try {
     User.findById(req.params.id, (err, user) => {
-      Article.find(
-        {
+      Article.find({
           _id: {
             $in: user.toRead.articles,
           },
