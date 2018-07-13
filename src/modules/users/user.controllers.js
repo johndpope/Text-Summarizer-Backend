@@ -2,7 +2,9 @@ import HTTPStatus from 'http-status';
 import fs from 'fs';
 import User from './user.model';
 import Article from '../articles/article.model';
-import {minioClient} from '../../services/minio.services';
+import {
+    minioClient
+} from '../../services/minio.services';
 
 
 export async function signup(req, res) {
@@ -16,7 +18,9 @@ export async function signup(req, res) {
 
 function upsertUser(profile, res) {
     return User
-        .findOne({'twitter.id': profile.id}, (err, user) => {
+        .findOne({
+            'twitter.id': profile.id
+        }, (err, user) => {
             if (!user) {
                 const twitterInfo = {
                     id: profile.id,
@@ -89,7 +93,9 @@ export async function follow(req, res) {
         await user._followings.add(req.params.id);
         await User.checkFollower(req.params.id, req.user.id)
         var isUserFollowed = await User.isFollowed(req.params.id, req.user.id)
-        return res.status(HTTPStatus.OK).json({isFollowed: isUserFollowed});
+        return res.status(HTTPStatus.OK).json({
+            isFollowed: isUserFollowed
+        });
     } catch (e) {
         return res.status(HTTPStatus.BAD_REQUEST).json(e);
     }
@@ -113,46 +119,35 @@ export async function update(req, res) {
 }
 
 export async function findUserById(req, res) {
-  try {
-      const user = await User.findById(req.params.id);
-      if (user.photo){
-        return new Promise((resolve, reject)=> {
-          var size = 0
-          var data = ""
-          minioClient.getObject('mybucket', user.photo, (err, dataStream) => {
-            if (err) {
-              return console.log(err)
-              reject();
-            }
-            dataStream.on('data', (chunk) => {
-              size += chunk.length
-              data += chunk
-            })
-            dataStream.on('end', () => {
-              console.log('End. Total size = ' + size)
-              user.photo = data;
-              return res.status(HTTPStatus.OK).json(user.toJSON());
-              resolve();
-            })
-          });
-        });
-      }
-    if(!user) {
-      return res.status(HTTPStatus.BAD_REQUEST).json({ message: 'User not found!'});
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(HTTPStatus.BAD_REQUEST).json({
+                message: 'User not found!'
+            });
+        }
+        return res.status(HTTPStatus.OK).json(user.toJSON());
+    } catch (e) {
+        return res.status(HTTPStatus.BAD_REQUEST).json(e);
     }
-  } catch (e) {
-    return res.status(HTTPStatus.BAD_REQUEST).json(e);
-  }
 }
 
 export async function getFollowers(req, res) {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+            return res.status(HTTPStatus.BAD_REQUEST).json({
+                message: 'User not found!'
+            });
         }
-        User.find({'_id': {$in: user.followers}}, (err, followers) => {
-            return res.status(HTTPStatus.OK).json({data: followers});
+        User.find({
+            '_id': {
+                $in: user.followers
+            }
+        }, (err, followers) => {
+            return res.status(HTTPStatus.OK).json({
+                data: followers
+            });
         });
     } catch (e) {
         return res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -163,10 +158,18 @@ export async function getFollowing(req, res) {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+            return res.status(HTTPStatus.BAD_REQUEST).json({
+                message: 'User not found!'
+            });
         }
-        User.find({'_id': {$in: user.followings}}, (err, followings) => {
-            return res.status(HTTPStatus.OK).json({data: followings});
+        User.find({
+            '_id': {
+                $in: user.followings
+            }
+        }, (err, followings) => {
+            return res.status(HTTPStatus.OK).json({
+                data: followings
+            });
         });
     } catch (e) {
         return res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -177,10 +180,18 @@ export async function getUserArticles(req, res) {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
+            return res.status(HTTPStatus.BAD_REQUEST).json({
+                message: 'User not found!'
+            });
         }
-        Article.find({'user': {$in: user.id}}, (err, userArticles) => {
-            return res.status(HTTPStatus.OK).json({data: userArticles});
+        Article.find({
+            'user': {
+                $in: user.id
+            }
+        }, (err, userArticles) => {
+            return res.status(HTTPStatus.OK).json({
+                data: userArticles
+            });
         }).populate('user');
     } catch (e) {
         return res.status(HTTPStatus.BAD_REQUEST).json(e);
@@ -190,8 +201,14 @@ export async function getUserArticles(req, res) {
 export async function getFavouritesList(req, res) {
     try {
         User.findById(req.params.id, (err, user) => {
-            Article.find({'_id': {$in: user.favourites.articles}}, (err, favs) => {
-                return res.status(HTTPStatus.OK).json({data: favs});
+            Article.find({
+                '_id': {
+                    $in: user.favourites.articles
+                }
+            }, (err, favs) => {
+                return res.status(HTTPStatus.OK).json({
+                    data: favs
+                });
             }).populate('user');
         });
     } catch (e) {
@@ -203,7 +220,11 @@ export async function getFavouritesList(req, res) {
 export function getToreadsList(req, res, next) {
     try {
         User.findById(req.params.id, (err, user) => {
-            Article.find({'_id': {$in: user.toRead.articles}}, (err, toreads) => {
+            Article.find({
+                '_id': {
+                    $in: user.toRead.articles
+                }
+            }, (err, toreads) => {
                 return res.status(HTTPStatus.OK).json(toreads);
             })
         });
