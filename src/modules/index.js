@@ -7,3 +7,5 @@ export default app => {
   app.use('/api/v1/articles', articleRoutes);
   app.use('/api/v1/collections', collectionRoutes);
 };
+
+// wow
