@@ -1,8 +1,12 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose, {
+    Schema
+} from 'mongoose';
 import slug from 'slug'
 import uniqueValidator from 'mongoose-unique-validator';
 import PythonShell from 'python-shell';
-import {minioClient} from '../../services/minio.services';
+import {
+    minioClient
+} from '../../services/minio.services';
 
 
 const ArticleSchema = new Schema({
@@ -95,9 +99,9 @@ ArticleSchema.statics = {
         });
     },
     list({
-             skip = 0,
-             limit = 5
-         } = {}) {
+        skip = 0,
+        limit = 5
+    } = {}) {
         return this.find()
             .sort({
                 createdAt: -1
@@ -109,7 +113,7 @@ ArticleSchema.statics = {
     summarizeText(post, title, text) {
         console.log('inside summarizeText')
         const shellOptions = {
-            pythonPath: '/usr/bin/python3',
+            pythonPath: '/Library/Frameworks/Python.framework/Versions/3.6/bin/python3',
             pythonOptions: ['-u'],
             args: [title, text],
         };
@@ -130,16 +134,28 @@ ArticleSchema.statics = {
         });
     },
     incFavourite(articleId) {
-        return this.findByIdAndUpdate(articleId, {$inc: {favouriteCount: 1}});
+        return this.findByIdAndUpdate(articleId, {
+            $inc: {
+                favouriteCount: 1
+            }
+        });
     },
     decFavourite(articleId) {
-        return this.findByIdAndUpdate(articleId, {$inc: {favouriteCount: -1}});
+        return this.findByIdAndUpdate(articleId, {
+            $inc: {
+                favouriteCount: -1
+            }
+        });
     },
     addToRead(articleId) {
-        return this.findByIdAndUpdate(articleId, {toReadFlag: true});
+        return this.findByIdAndUpdate(articleId, {
+            toReadFlag: true
+        });
     },
     removeToRead(articleId) {
-        return this.findByIdAndUpdate(articleId, {toReadFlag: false});
+        return this.findByIdAndUpdate(articleId, {
+            toReadFlag: false
+        });
     },
 };
 
