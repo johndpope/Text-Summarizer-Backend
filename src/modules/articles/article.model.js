@@ -113,7 +113,7 @@ ArticleSchema.statics = {
     summarizeText(post, title, text) {
         console.log('inside summarizeText')
         const shellOptions = {
-            pythonPath: '/Library/Frameworks/Python.framework/Versions/3.6/bin/python3',
+            pythonPath: '/usr/bin/python3',
             pythonOptions: ['-u'],
             args: [title, text],
         };
