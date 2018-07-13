@@ -1,9 +1,12 @@
 import HTTPStatus from 'http-status';
-import {minioClient} from '../../services/minio.services'
+import {
+    minioClient
+} from '../../services/minio.services'
 import User from '../users/user.model';
 import Article from './article.model';
 
 
+// create article
 export async function createArticle(req, res) {
     console.log('inside the controller')
     try {
@@ -92,7 +95,9 @@ export async function getArticlesList(req, res) {
             return arr;
         }, []);
 
-        return res.status(HTTPStatus.OK).json({data: articles});
+        return res.status(HTTPStatus.OK).json({
+            data: articles
+        });
     } catch (e) {
         res.status(HTTPStatus.BAD_REQUEST).json(e);
     }
@@ -136,7 +141,9 @@ export async function favouriteArticle(req, res) {
         const user = await User.findById(req.user._id);
         await user._favourites.articles(req.params.id);
         const favourite = user._favourites.isArticleIsFavourite(req.params.id);
-        return res.status(HTTPStatus.OK).json({isFavourited: favourite});
+        return res.status(HTTPStatus.OK).json({
+            isFavourited: favourite
+        });
     } catch (e) {
         res.status(HTTPStatus.BAD_REQUEST).json(e);
     }
