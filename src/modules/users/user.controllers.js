@@ -113,15 +113,36 @@ export async function update(req, res) {
 }
 
 export async function findUserById(req, res) {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(HTTPStatus.BAD_REQUEST).json({message: 'User not found!'});
-        }
-        return res.status(HTTPStatus.OK).json(user.toJSON());
-    } catch (e) {
-        return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  try {
+      const user = await User.findById(req.params.id);
+      if (user.photo){
+        return new Promise((resolve, reject)=> {
+          var size = 0
+          var data = ""
+          minioClient.getObject('mybucket', user.photo, (err, dataStream) => {
+            if (err) {
+              return console.log(err)
+              reject();
+            }
+            dataStream.on('data', (chunk) => {
+              size += chunk.length
+              data += chunk
+            })
+            dataStream.on('end', () => {
+              console.log('End. Total size = ' + size)
+              user.photo = data;
+              return res.status(HTTPStatus.OK).json(user.toJSON());
+              resolve();
+            })
+          });
+        });
+      }
+    if(!user) {
+      return res.status(HTTPStatus.BAD_REQUEST).json({ message: 'User not found!'});
     }
+  } catch (e) {
+    return res.status(HTTPStatus.BAD_REQUEST).json(e);
+  }
 }
 
 export async function getFollowers(req, res) {
