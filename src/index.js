@@ -5,7 +5,9 @@ import middelwareConfig from './config/middlewares';
 import apiRoutes from './modules';
 import session from 'express-session';
 const app = express();
-app.use(session({ secret: 'this is my secret session' }));
+app.use(session({
+  secret: 'this is my secret session'
+}));
 middelwareConfig(app);
 
 app.get('/', (req, res) => {
